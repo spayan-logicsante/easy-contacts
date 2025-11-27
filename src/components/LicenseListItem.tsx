@@ -32,6 +32,8 @@ import { ContactForm } from './ContactForm'
 
 interface LicenseListItemProps {
   license: License
+  expanded: boolean
+  onToggleExpanded: () => void
   onUpdate: (data: Partial<Omit<License, 'id' | 'contacts' | 'createdAt'>>) => void
   onDelete: () => void
   onAddContact: (contact: Omit<Contact, 'id'>) => void
@@ -49,13 +51,14 @@ const gradients = [
 
 export function LicenseListItem({
   license,
+  expanded,
+  onToggleExpanded,
   onUpdate,
   onDelete,
   onAddContact,
   onUpdateContact,
   onDeleteContact,
 }: LicenseListItemProps) {
-  const [expanded, setExpanded] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [addContactOpen, setAddContactOpen] = useState(false)
@@ -71,7 +74,7 @@ export function LicenseListItem({
         {/* Main row */}
         <div
           className="flex items-center gap-4 p-4 cursor-pointer"
-          onClick={() => setExpanded(!expanded)}
+          onClick={onToggleExpanded}
         >
           {/* Icon */}
           <div className={`p-2 rounded-lg bg-gradient-to-br ${gradient} text-white shadow-md shrink-0`}>

@@ -32,6 +32,8 @@ import { ContactCard } from './ContactCard'
 
 interface LicenseCardProps {
   license: License
+  expanded: boolean
+  onToggleExpanded: () => void
   onUpdate: (data: Partial<Omit<License, 'id' | 'contacts' | 'createdAt'>>) => void
   onDelete: () => void
   onAddContact: (contact: Omit<Contact, 'id'>) => void
@@ -49,13 +51,14 @@ const cardGradients = [
 
 export function LicenseCard({
   license,
+  expanded,
+  onToggleExpanded,
   onUpdate,
   onDelete,
   onAddContact,
   onUpdateContact,
   onDeleteContact,
 }: LicenseCardProps) {
-  const [expanded, setExpanded] = useState(true)
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [addContactOpen, setAddContactOpen] = useState(false)
@@ -171,7 +174,7 @@ export function LicenseCard({
         <CardContent className="pt-0">
           <div className="border-t border-dashed border-gray-200 pt-3">
             <button
-              onClick={() => setExpanded(!expanded)}
+              onClick={onToggleExpanded}
               className="flex items-center justify-between w-full text-sm font-semibold text-gray-500 hover:text-violet-600 transition-colors"
             >
               <span className="flex items-center gap-2">

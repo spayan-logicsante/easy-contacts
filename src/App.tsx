@@ -23,6 +23,25 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [addLicenseOpen, setAddLicenseOpen] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>('cards')
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({})
+
+  const isCardExpanded = (licenseId: string) => {
+    if (expandedCards[licenseId] !== undefined) {
+      return expandedCards[licenseId]
+    }
+    // Par défaut: cartes ouvertes, liste fermée
+    return viewMode === 'cards'
+  }
+
+  const toggleCardExpanded = (licenseId: string) => {
+    const currentState = expandedCards[licenseId] !== undefined
+      ? expandedCards[licenseId]
+      : viewMode === 'cards'
+    setExpandedCards((prev) => ({
+      ...prev,
+      [licenseId]: !currentState,
+    }))
+  }
 
   const filteredLicenses = useMemo(() => {
     if (!searchQuery.trim()) return licenses
@@ -82,11 +101,13 @@ function App() {
               <p className="text-gray-500 font-medium">Aucun résultat pour "{searchQuery}"</p>
             </div>
           ) : viewMode === 'cards' ? (
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 items-start">
               {filteredLicenses.map((license) => (
                 <LicenseCard
                   key={license.id}
                   license={license}
+                  expanded={isCardExpanded(license.id)}
+                  onToggleExpanded={() => toggleCardExpanded(license.id)}
                   onUpdate={(data) => updateLicense(license.id, data)}
                   onDelete={() => deleteLicense(license.id)}
                   onAddContact={(contact) => addContact(license.id, contact)}
@@ -101,6 +122,8 @@ function App() {
                 <LicenseListItem
                   key={license.id}
                   license={license}
+                  expanded={isCardExpanded(license.id)}
+                  onToggleExpanded={() => toggleCardExpanded(license.id)}
                   onUpdate={(data) => updateLicense(license.id, data)}
                   onDelete={() => deleteLicense(license.id)}
                   onAddContact={(contact) => addContact(license.id, contact)}
